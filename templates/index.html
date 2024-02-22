@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>File Upload Preview</title>
+    <style></style>
+  </head>
+  <body>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+      <input type="file" name="file" id="fileInput" />
+
+      <div id="preview"></div>
+      <!-- Placeholder for file preview -->
+
+      <input type="submit" value="Upload" />
+    </form>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        document
+          .getElementById("fileInput")
+          .addEventListener("change", function (event) {
+            var previewContainer = document.getElementById("preview");
+            previewContainer.innerHTML = ""; // Clear previous content
+            var file = event.target.files[0];
+
+            if (!file) {
+              return; // No file selected
+            }
+
+            if (file.type.startsWith("image/")) {
+              var img = document.createElement("img");
+              img.src = URL.createObjectURL(file);
+              img.onload = function () {
+                URL.revokeObjectURL(img.src); // Clean up memory
+              };
+              img.style.maxWidth = "200px";
+              img.style.maxHeight = "200px";
+              previewContainer.appendChild(img);
+            } else if (file.type === "application/pdf") {
+              var iframe = document.createElement("iframe");
+              iframe.src = URL.createObjectURL(file);
+              iframe.onload = function () {
+                URL.revokeObjectURL(iframe.src);
+              };
+              iframe.style.width = "100%";
+              iframe.style.height = "500px";
+              previewContainer.appendChild(iframe);
+            }
+          });
+      });
+    </script>
+  </body>
+</html>
